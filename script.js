@@ -12,22 +12,35 @@ const exercises = [
 ];
 
 let currentExerciseIndex = 0;
+let weights = [];
+let reps = [];
 
-const startButton = document.getElementById('startButton');
-const nextButton = document.getElementById('nextButton');
+const recordButton = document.getElementById('recordButton');
 const exerciseContainer = document.getElementById('exercise-container');
+const weightInput = document.getElementById('weight');
+const repsInput = document.getElementById('reps');
 
-startButton.addEventListener('click', startWorkout);
-nextButton.addEventListener('click', nextExercise);
+recordButton.addEventListener('click', recordStats);
 
-function startWorkout() {
-    startButton.style.display = 'none';
-    nextButton.style.display = 'block';
-    showExercise();
-}
+showExercise();
 
 function showExercise() {
-    exerciseContainer.innerText = exercises[currentExerciseIndex];
+    exerciseContainer.innerHTML = `<h2>${exercises[currentExerciseIndex]}</h2>`;
+    weightInput.value = 0;
+    repsInput.value = 0;
+}
+
+function recordStats() {
+    const weight = parseInt(weightInput.value);
+    const rep = parseInt(repsInput.value);
+
+    if (!isNaN(weight) && !isNaN(rep)) {
+        weights.push(weight);
+        reps.push(rep);
+        nextExercise();
+    } else {
+        alert("Please enter valid weight and rep values.");
+    }
 }
 
 function nextExercise() {
@@ -40,6 +53,17 @@ function nextExercise() {
 }
 
 function endWorkout() {
-    exerciseContainer.innerText = 'Congratulations! Workout completed.';
-    nextButton.style.display = 'none';
+    // Display recorded stats
+    displayStats();
+}
+
+function displayStats() {
+    const statsContainer = document.createElement('div');
+    statsContainer.innerHTML = '<h2>Workout Stats</h2>';
+    for (let i = 0; i < exercises.length; i++) {
+        const exerciseStats = document.createElement('p');
+        exerciseStats.innerHTML = `<strong>${exercises[i]}:</strong> ${weights[i]} lbs, ${reps[i]} reps`;
+        statsContainer.appendChild(exerciseStats);
+    }
+    document.body.appendChild(statsContainer);
 }
